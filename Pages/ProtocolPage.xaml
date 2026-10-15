@@ -1,0 +1,73 @@
+<Page
+    x:Class="NSLocker.Ui.Pages.ProtocolPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctl="using:NSLocker.Ui.Controls">
+
+  <!-- Page commune aux protocoles à état unique (mDNS, LLMNR, DNSSEC, IPv6) : choisi par le paramètre de navigation. -->
+  <ScrollViewer>
+    <StackPanel Spacing="16" MaxWidth="980" HorizontalAlignment="Left">
+      <StackPanel Spacing="4">
+        <TextBlock Text="{x:Bind Vm.Info.Title, Mode=OneWay}" Style="{StaticResource TitleTextBlockStyle}" IsTextSelectionEnabled="True"/>
+        <TextBlock Text="{x:Bind Vm.Info.Subtitle, Mode=OneWay}" TextWrapping="Wrap" Opacity="0.7" IsTextSelectionEnabled="True"/>
+      </StackPanel>
+
+      <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="Risque de sécurité">
+        <InfoBar.Content>
+          <TextBlock Text="{x:Bind Vm.Info.Risk, Mode=OneWay}" TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8"/>
+        </InfoBar.Content>
+      </InfoBar>
+      <InfoBar IsOpen="True" IsClosable="False" Severity="Warning" Title="Effets de bord possibles si désactivé"
+               Visibility="{x:Bind HasText(Vm.Info.SideEffects), Mode=OneWay}">
+        <InfoBar.Content>
+          <TextBlock Text="{x:Bind Vm.Info.SideEffects, Mode=OneWay}" TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8"/>
+        </InfoBar.Content>
+      </InfoBar>
+
+      <Border Padding="20" CornerRadius="8" BorderThickness="1"
+              Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+        <StackPanel Spacing="14">
+          <StackPanel Orientation="Horizontal" Spacing="16">
+            <ctl:StateChip Vm="{x:Bind Vm, Mode=OneWay}"/>
+            <TextBlock Text="{x:Bind Vm.Detail, Mode=OneWay}" FontFamily="Consolas" Opacity="0.7" VerticalAlignment="Center" IsTextSelectionEnabled="True"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <Button x:Name="ToggleButton" Click="Toggle_Click" IsEnabled="{x:Bind Shell.IsIdle, Mode=OneWay}"
+                    Style="{StaticResource AccentButtonStyle}">
+              <TextBlock Text="{x:Bind ToggleText(Vm.IsEnabled, Vm.Name), Mode=OneWay}"/>
+            </Button>
+            <Button Click="Restart_Click" IsEnabled="{x:Bind Shell.IsIdle, Mode=OneWay}" Content="Redémarrer le service DNS Client"
+                    Visibility="{x:Bind UsesDnscacheRestart(Vm.Info.Key), Mode=OneWay}"/>
+            <Button Click="Script_Click" Content="Script PowerShell"/>
+            <ProgressRing IsActive="{x:Bind Shell.IsBusy, Mode=OneWay}" Width="20" Height="20"/>
+          </StackPanel>
+          <TextBlock Text="{x:Bind Vm.Info.ApplyNote, Mode=OneWay}" TextWrapping="Wrap" Opacity="0.6" FontSize="12" IsTextSelectionEnabled="True"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Diagnostic DNSSEC approfondi : uniquement sur cette page (NRPT + requêtes réelles). -->
+      <Border Padding="20" CornerRadius="8" BorderThickness="1"
+              Visibility="{x:Bind DnssecVisibility(Vm.Info.Key), Mode=OneWay}"
+              Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+        <StackPanel Spacing="12">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Text="Diagnostic approfondi" Style="{StaticResource BodyStrongTextBlockStyle}" VerticalAlignment="Center"/>
+            <Button Click="DnssecDiag_Click" IsEnabled="{x:Bind Shell.IsIdle, Mode=OneWay}" Content="Lancer le diagnostic"/>
+            <ProgressRing IsActive="{x:Bind Shell.IsBusy, Mode=OneWay}" Width="20" Height="20"/>
+          </StackPanel>
+          <TextBlock Text="Interroge NRPT, puis effectue de vraies requêtes DNS (domaine signé valide + domaine volontairement invalide) — nécessite une connexion réseau. Peut prendre quelques secondes."
+                     TextWrapping="Wrap" Opacity="0.6" FontSize="12" IsTextSelectionEnabled="True"/>
+          <StackPanel Spacing="6" Visibility="{x:Bind HasDnssecDiag(Shell.DnssecDiag), Mode=OneWay}">
+            <TextBlock Text="{x:Bind Shell.DnssecDiag.PolicyLine, Mode=OneWay}" TextWrapping="Wrap" IsTextSelectionEnabled="True"/>
+            <TextBlock Text="{x:Bind Shell.DnssecDiag.NrptLine, Mode=OneWay}" TextWrapping="Wrap" IsTextSelectionEnabled="True"/>
+            <TextBlock Text="{x:Bind Shell.DnssecDiag.SignedLine, Mode=OneWay}" TextWrapping="Wrap" IsTextSelectionEnabled="True"/>
+            <TextBlock Text="{x:Bind Shell.DnssecDiag.ForgedLine, Mode=OneWay}" TextWrapping="Wrap" IsTextSelectionEnabled="True"/>
+            <TextBlock Text="{x:Bind Shell.DnssecDiag.DcLine, Mode=OneWay}" TextWrapping="Wrap" IsTextSelectionEnabled="True"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</Page>

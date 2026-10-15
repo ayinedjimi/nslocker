@@ -1,0 +1,70 @@
+<Window
+    x:Class="NSLocker.Ui.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Grid x:Name="Root">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- Barre de titre personnalisée (Mica visible derrière) -->
+    <Grid x:Name="AppTitleBar" Height="36">
+      <StackPanel Orientation="Horizontal" Spacing="8" Margin="12,0,0,0" VerticalAlignment="Center">
+        <FontIcon Glyph="&#xE72E;" FontSize="16" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+        <TextBlock Text="NSLOCKER" FontSize="12"/>
+        <Border Background="{ThemeResource AccentFillColorDefaultBrush}" CornerRadius="4" Padding="6,1" VerticalAlignment="Center">
+          <TextBlock Text="alpha" FontSize="10" Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"/>
+        </Border>
+      </StackPanel>
+    </Grid>
+
+    <NavigationView x:Name="Nav" Grid.Row="1"
+                    PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" IsSettingsVisible="False"
+                    OpenPaneLength="240" SelectionChanged="Nav_SelectionChanged">
+      <NavigationView.MenuItems>
+        <NavigationViewItem Content="Tableau de bord" Tag="dashboard" IsSelected="True">
+          <NavigationViewItem.Icon><FontIcon Glyph="&#xE80F;"/></NavigationViewItem.Icon>
+        </NavigationViewItem>
+        <NavigationViewItemSeparator/>
+        <NavigationViewItem Content="mDNS" Tag="mdns">
+          <NavigationViewItem.Icon><FontIcon Glyph="&#xE702;"/></NavigationViewItem.Icon>
+          <NavigationViewItem.InfoBadge><InfoBadge Background="{x:Bind Shell.Mdns.Brush, Mode=OneWay}"/></NavigationViewItem.InfoBadge>
+        </NavigationViewItem>
+        <NavigationViewItem Content="LLMNR" Tag="llmnr">
+          <NavigationViewItem.Icon><FontIcon Glyph="&#xE774;"/></NavigationViewItem.Icon>
+          <NavigationViewItem.InfoBadge><InfoBadge Background="{x:Bind Shell.Llmnr.Brush, Mode=OneWay}"/></NavigationViewItem.InfoBadge>
+        </NavigationViewItem>
+        <NavigationViewItem Content="DNSSEC" Tag="dnssec">
+          <NavigationViewItem.Icon><FontIcon Glyph="&#xE72E;"/></NavigationViewItem.Icon>
+          <NavigationViewItem.InfoBadge><InfoBadge Background="{x:Bind Shell.Dnssec.Brush, Mode=OneWay}"/></NavigationViewItem.InfoBadge>
+        </NavigationViewItem>
+        <NavigationViewItem Content="IPv6" Tag="ipv6">
+          <NavigationViewItem.Icon><FontIcon Glyph="&#xE968;"/></NavigationViewItem.Icon>
+          <NavigationViewItem.InfoBadge><InfoBadge Background="{x:Bind Shell.Ipv6.Brush, Mode=OneWay}"/></NavigationViewItem.InfoBadge>
+        </NavigationViewItem>
+        <NavigationViewItem Content="NBT-NS" Tag="nbtns">
+          <NavigationViewItem.Icon><FontIcon Glyph="&#xE839;"/></NavigationViewItem.Icon>
+          <NavigationViewItem.InfoBadge><InfoBadge Background="{x:Bind Shell.NbtSummary.Brush, Mode=OneWay}"/></NavigationViewItem.InfoBadge>
+        </NavigationViewItem>
+        <NavigationViewItem Content="NTLM" Tag="ntlm">
+          <NavigationViewItem.Icon><FontIcon Glyph="&#xE72E;"/></NavigationViewItem.Icon>
+          <NavigationViewItem.InfoBadge><InfoBadge Background="{x:Bind Shell.Ntlm.Brush, Mode=OneWay}"/></NavigationViewItem.InfoBadge>
+        </NavigationViewItem>
+      </NavigationView.MenuItems>
+
+      <NavigationView.PaneFooter>
+        <TextBlock Text="v0.1.0-alpha" Opacity="0.6" FontSize="12" Margin="16,0,0,12"/>
+      </NavigationView.PaneFooter>
+
+      <Grid Padding="24,8,24,16" RowSpacing="8">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <!-- Notifications (remplace les toasts HTML) : succès / erreur de la dernière action -->
+        <InfoBar IsOpen="{x:Bind Shell.HasMessage, Mode=OneWay}" Severity="{x:Bind Shell.Severity, Mode=OneWay}"
+                 Message="{x:Bind Shell.Message, Mode=OneWay}" IsClosable="True" Closed="InfoBar_Closed"/>
+        <Frame x:Name="ContentFrame" Grid.Row="1"/>
+      </Grid>
+    </NavigationView>
+  </Grid>
+</Window>
