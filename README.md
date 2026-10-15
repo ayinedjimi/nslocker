@@ -57,7 +57,7 @@
 
 ## Utilisation
 
-Téléchargez `NSLOCKER.exe` depuis les [Releases](../../releases), vérifiez son SHA256 (`SHA256SUMS.txt`), puis lancez-le en administrateur. L'exe fait environ 85 Mio (89 602 980 octets pour la v0.1.0-alpha).
+Téléchargez depuis les [Releases](../../releases) soit `NSLOCKER.exe` (portable), soit `NSLOCKER-Setup-0.1.0-alpha.exe` (installeur Inno Setup). Vérifiez le SHA256 (`SHA256SUMS.txt`), puis lancez en administrateur. L'exe fait environ 85 Mio (89 602 980 octets pour la v0.1.0-alpha).
 
 ## Compilation
 
@@ -65,6 +65,8 @@ Téléchargez `NSLOCKER.exe` depuis les [Releases](../../releases), vérifiez so
 dotnet build -c Release -p:Platform=x64
 dotnet publish -c Release -r win-x64 -p:Platform=x64
 ```
+
+Pour recompiler l'installeur : `ISCC installer\NSLOCKER.iss` (Inno Setup 6, après `dotnet publish`).
 
 ## Licence
 
